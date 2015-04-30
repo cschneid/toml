@@ -16,14 +16,22 @@ module Toml
     end
 
     rule(:key)    { (match('[a-z]').repeat).as(:key)   }
-    rule(:equals) { any >> str("=") >> any             }
+    rule(:equals) { match(' ').repeat >> str("=") >> match(' ').repeat }
     rule(:value)  { (match('[a-z]').repeat).as(:value) }
     rule(:newline) { match('\n') }
+    rule(:comment) { (str("#") >> match('[^\n]').repeat).as(:comment) }
+
+    rule(:key_val) { key >> equals >> value }
 
     def parse
-      parse_result = ((key >> equals >> value >> newline.maybe).repeat).parse(raw_string)
+      parser = ((key_val >> newline.repeat) |
+                (comment >> newline.repeat)   ).repeat >>
+               newline.repeat
+      parse_result = parser.parse(raw_string)
 
       parse_result.reduce({}) do |memo, result|
+        next memo if result[:comment]
+
         key = result[:key].to_s
         val = result[:value].to_s
         memo[key] = val
