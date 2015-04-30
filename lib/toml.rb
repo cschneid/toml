@@ -17,7 +17,7 @@ module Toml
 
     rule(:key)    { (match('[a-z]').repeat).as(:key)   }
     rule(:equals) { match(' ').repeat >> str("=") >> match(' ').repeat }
-    rule(:value)  { (match('[a-z]').repeat).as(:value) }
+    rule(:value)  { (match('[a-z]').repeat).as(:value) >> (match('\s').repeat) }
     rule(:newline) { match('\n') }
     rule(:comment) { (str("#") >> match('[^\n]').repeat).as(:comment) }
 

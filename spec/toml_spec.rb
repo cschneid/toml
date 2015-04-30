@@ -24,6 +24,16 @@ module Toml
       input = "#comment"
       expect(Parser.parse(input)).to eq({})
     end
+
+    it "handles a partial line comment" do
+      input = "a=c# C should be just the single char"
+      expect(Parser.parse(input)).to eq({"a" => "c"})
+    end
+
+    it "doesn't consume trailing spaces as part of a value" do
+      input = "a = d      "
+      expect(Parser.parse(input)).to eq({"a" => "d"})
+    end
   end
 end
 
