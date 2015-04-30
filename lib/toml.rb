@@ -5,20 +5,31 @@ module Toml
   class Parser
     include Parslet
 
-    def self.from_file(file)
-      File.open(file) { |io| self.parse(io) }
-    end
-
-    def self.parse(io)
-      instance = self.new(io)
+    def self.parse(str)
+      instance = self.new(str)
       instance.parse
     end
 
-    def initialize(io)
-      @io = i
+    attr_reader :raw_string
+    def initialize(raw_string)
+      @raw_string = raw_string
     end
 
+    rule(:key)    { (match('[a-z]').repeat).as(:key)   }
+    rule(:equals) { any >> str("=") >> any             }
+    rule(:value)  { (match('[a-z]').repeat).as(:value) }
+    rule(:newline) { match('\n') }
+
     def parse
+      parse_result = ((key >> equals >> value >> newline.maybe).repeat).parse(raw_string)
+
+      parse_result.reduce({}) do |memo, result|
+        key = result[:key].to_s
+        val = result[:value].to_s
+        memo[key] = val
+        memo
+      end
     end
+
   end
 end
