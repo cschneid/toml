@@ -21,18 +21,23 @@ module Toml
     end
 
     it "matches a single comment" do
-      input = "#comment"
+      input = '#comment'
       expect(Parser.parse(input)).to eq({})
     end
 
     it "handles a partial line comment" do
-      input = "a=c# C should be just the single char"
+      input = 'a=c# C should be just the single char'
       expect(Parser.parse(input)).to eq({"a" => "c"})
     end
 
     it "doesn't consume trailing spaces as part of a value" do
-      input = "a = d      "
+      input = 'a = d      '
       expect(Parser.parse(input)).to eq({"a" => "d"})
+    end
+
+    it "parses quoted values" do
+      input = 'a = "ab#c"'
+      expect(Parser.parse(input)).to eq({"a" => "ab#c"})
     end
   end
 end
