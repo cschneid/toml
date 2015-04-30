@@ -1,6 +1,6 @@
 # Toml
 
-TODO: Write a gem description
+An incomplete attempt to parse Toml with the ruby Parslet library
 
 ## Installation
 
@@ -20,7 +20,7 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+Please don't use. It's totally incomplete.
 
 ## Contributing
 
